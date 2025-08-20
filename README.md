@@ -14,8 +14,6 @@ Interaksi Otomatis yang Responsif: Pelanggan bisa mendapatkan jawaban cepat tanp
 
 Pendekatan Cerdas dengan Auto-FAQ: Bot yang memanfaatkan FAQ resmi meningkatkan efisiensi dan akurasi jawaban, menjadikan bot terasa pintar dan dapat diandalkan.
 
-Kolaborasi Antar Tim Spesialis: Fitur database penyimpanan pertanyaan rumit dan pengarahannya ke departemen programmer atau penjualan memberikan nuansa kerja tim yang terstruktur dan profesional.
-
 Fleksibilitas dalam Komunikasi: Kemampuan memproses pesan teks dan (opsional) suara menambah dimensi baru dalam interaksi, membuat bot terasa lebih hidup dan modern.
 
 Antarmuka yang User-Friendly: Dengan desain yang jelas dan menarik, pelanggan merasa nyaman dan tidak kesulitan saat berinteraksi, meningkatkan kepuasan pengguna.
@@ -23,3 +21,7 @@ Antarmuka yang User-Friendly: Dengan desain yang jelas dan menarik, pelanggan me
 Dokumentasi Lengkap untuk Admin: Menambah kemudahan bagi pengelola bot, memungkinkan mereka menjalankan dan memodifikasi bot dengan percaya diri tanpa kebingungan.
 
 Semua elemen ini membuat proyek tidak cuma berguna tapi juga menyenangkan dikerjakan dan dipakai, serta memperkuat kerja sama di dalam tim pengembangan dan operasional toko.
+
+# inspirasi ku :
+ di M1.L4 (pokemon) atau proyek kelompok kemarin M6.L3-M6.L4 (yang tentang pokemon juga)
+ 
