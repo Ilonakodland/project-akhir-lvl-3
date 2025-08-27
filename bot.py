@@ -1,75 +1,59 @@
-import os
+
+
 import discord
 from discord.ext import commands
-from dotenv import load_dotenv
-from database import setup_db, simpan_pertanyaan, ambil_pertanyaan_pending, close_pertanyaan
-from FAQ import faq
+import asyncio
+import json
+from config import TOKEN, PREFIX, BOT_NAME, BOT_DESCRIPTION
+from commands import Commands
+from events import on_ready, on_message, on_reaction_add, on_command_error
+from tasks import change_status, auto_promo
 
-# Load token dari .env
-load_dotenv()
-TOKEN = os.getenv('TOKEN')
-
+# Setup bot
 intents = discord.Intents.default()
 intents.message_content = True
+intents.reactions = True
+bot = commands.Bot(command_prefix=PREFIX, intents=intents, description=BOT_DESCRIPTION)
 
-bot = commands.Bot(command_prefix='!', intents=intents)
+# Setup tasks
+bot.tasks = {
+    'change_status': change_status,
+    'auto_promo': auto_promo
+}
 
-# Setup database saat mulai
-setup_db()
-
+# Register events
 @bot.event
 async def on_ready():
-    print(f'Bot aktif sebagai {bot.user}')
+    await on_ready(bot)
 
 @bot.event
 async def on_message(message):
-    if message.author == bot.user:
-        return
-
-    content = message.content.lower()
-    answered = False
-
-    for key in faq.keys():
-        if key in content:
-            await message.channel.send(faq[key])
-            answered = True
-            break
-
-    if not answered:
-        simpan_pertanyaan(str(message.author), message.content)
-        await message.channel.send(
-            "Terima kasih atas pertanyaanmu! Kami akan teruskan ke tim spesialis dan segera menghubungimu."
-        )
-
+    await on_message(message, bot)
     await bot.process_commands(message)
 
-@bot.command(name='helpbot')
-async def help_bot(ctx):
-    text = (
-        "Halo! Saya Bot Bantuan Semarak untuk toko Semua Bisa Kamu Beli.\n"
-        "Saya bisa menjawab pertanyaan umum secara otomatis.\n"
-        "Pertanyaan rumit akan diteruskan ke tim spesialis.\n"
-        "Gunakan bot ini untuk memudahkan layanan pelanggan."
-    )
-    await ctx.send(text)
+@bot.event
+async def on_reaction_add(reaction, user):
+    await on_reaction_add(reaction, user, bot)
 
-@bot.command(name='list_escalations')
-@commands.has_permissions(administrator=True)
-async def list_escalations(ctx):
-    rows = ambil_pertanyaan_pending()
-    if not rows:
-        await ctx.send("Tidak ada pertanyaan yang perlu eskalasi saat ini.")
-    else:
-        response = "Pertanyaan yang perlu eskalasi:\n"
-        for row in rows:
-            response += f"ID {row[0]} - Dari: {row[1]}\nPertanyaan: {row[2]}\n\n"
-        await ctx.send(response[:2000])
+@bot.event
+async def on_command_error(ctx, error):
+    await on_command_error(ctx, error)
 
-@bot.command(name='close_escalation')
-@commands.has_permissions(administrator=True)
-async def close_escalation(ctx, id: int):
-    close_pertanyaan(id)
-    await ctx.send(f"Pertanyaan dengan ID {id} telah ditandai selesai.")
+# Register commands
+bot.add_cog(Commands(bot))
 
+# Jalankan bot
 if __name__ == '__main__':
-    bot.run(TOKEN)
+    print(f"🚀 Memulai {BOT_NAME} - Customer Service Discord yang Kreatif!")
+    print("📝 Pastikan sudah mengganti TOKEN dengan token bot Discord Anda!")
+    print("🔗 Invite bot ke server dengan permission 'Send Messages', 'Read Message History', dan 'Use Slash Commands'")
+    
+    try:
+        bot.run(TOKEN)
+    except discord.errors.LoginFailure:
+        print("❌ ERROR: Token Discord tidak valid!")
+        print("📋 Cara mendapatkan token:")
+        print("1. Buka https://discord.com/developers/applications")
+        print("2. Buat aplikasi baru atau pilih yang sudah ada")
+        print("3. Pergi ke tab 'Bot' dan copy token")
+        print("4. Ganti 'your_discord_bot_token_here' dengan token tersebut")
